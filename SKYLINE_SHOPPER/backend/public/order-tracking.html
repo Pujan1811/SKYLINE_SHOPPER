@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Order | Skyline Shopper</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Add styling for order tracking */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .navbar .logo img {
+            max-width: 300px;
+        }
+
+        .order-tracking {
+            padding: 40px 20px;
+            text-align: center;
+            background-color: #fff;
+            border-radius: 8px;
+            max-width: 700px;
+            margin: 30px auto;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .order-tracking h1 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .order-id-input input {
+            width: 65%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .order-id-input button {
+            padding: 12px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #FF9900;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .order-id-input button:hover {
+            background-color: #e6891d;
+        }
+
+        /* Order Status Progress Bar */
+        .order-status-container {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .status-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            padding: 10px 0;
+        }
+
+        .status-steps::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #e0e0e0;
+        }
+
+        .step {
+            text-align: center;
+        }
+
+        .step .circle {
+            width: 40px;
+            height: 40px;
+            background-color: #f0f0f0;
+            border-radius: 50%;
+            margin: 0 auto;
+            font-size: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #757575;
+            transition: 0.3s;
+        }
+
+        .step.completed .circle {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .step.completed .status-label {
+            color: #007bff;
+        }
+
+        /* Order Details */
+        .order-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    text-align: center; /* Centers text inside the item */
+}
+
+.order-item-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 20px;
+}
+
+.order-item-info {
+    display: inline-block;
+}
+
+.order-item-info p {
+    margin: 5px 0;
+}
+
+.status-time {
+    font-size: 12px;
+    color: #757575;
+    margin-top: 5px;
+    text-align: center;
+}
+
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="navbar">
+            <div class="logo">
+                <a href="index.html"><img src="images/logo2.png" width="300px"></a>
+            </div>
+            <nav>
+                <ul id="MenuItems">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html">Products</a></li>
+                    <li><a href="contact.html">Contacts</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="account.html">Account</a></li>
+                </ul>
+            </nav>
+            <a href="cart.html"><img src="images/cart.png" width="30px" height="30px"></a>
+            <img src="images/menu.png" class="menu-icon" onclick="menutoggle()">
+        </div>
+    </div>
+
+    <div class="order-tracking">
+        <h1>Track Your Order</h1>
+        <div class="order-id-input">
+            <input type="text" id="order-id-input" placeholder="Enter Order ID">
+            <button onclick="trackOrder()">Track Order</button>
+        </div>
+
+    <div id="order-status-container" class="order-status-container" style="display: none;">
+        <h2>Order Status</h2>
+        <div class="status-steps">
+            <div class="step" id="ordered">
+                <div class="circle">1</div>
+                <div class="status-label">Ordered</div>
+                <div id="ordered-time" class="status-time"></div> <!-- Time placeholder -->
+            </div>
+            <div class="step" id="shipped">
+                <div class="circle">2</div>
+                <div class="status-label">Shipped</div>
+                <div id="shipped-time" class="status-time"></div> <!-- Time placeholder -->
+            </div>
+            <div class="step" id="out-for-delivery">
+                <div class="circle">3</div>
+                <div class="status-label">Out for Delivery</div>
+                <div id="out-for-delivery-time" class="status-time"></div> <!-- Time placeholder -->
+            </div>
+            <div class="step" id="delivered">
+                <div class="circle">4</div>
+                <div class="status-label">Delivered</div>
+                <div id="delivered-time" class="status-time"></div> <!-- Time placeholder -->
+            </div>
+        </div>
+    </div>
+    
+
+    <div id="order-details" class="order-details" style="display: none;">
+        <h2>Order Details</h2>
+        <p><strong>Total Amount:</strong> ₹<span id="total-amount">0.00</span></p>
+        <br>
+        <br>
+        <div id="order-items"></div>
+    </div>
+</div>
+<br><br>
+<div class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="footer-col-1">
+                <h3>Download Our App</h3>
+                <p>Download App For Android and iOS Mobile Phones.</p>
+                <div class="app-logo">
+                    <a href="https://play.google.com/store" target="_blank">
+                        <img src="images/play-store.png">
+                    </a>
+                    <a href="https://www.apple.com/app-store/" target="_blank">
+                        <img src="images/app-store.png" alt="App Store">
+                    </a>
+                </div>
+            </div>
+            <div class="footer-col-2">
+                <img src="images/logo3white.png">
+                <p>Our Purpose is to sustainably make the pleasure and benefits of sports accessible to the many.</p>
+            </div>
+            <div class="footer-col-3">
+                <h3>Useful Links</h3>
+                <ul>
+                    <li>Coupons</li>
+                    <li>Blog Post</li>
+                    <li>Return Policy</li>
+                    <li>Join Affiliate</li>
+                </ul>
+            </div>
+            <div class="footer-col-3">
+                <h3>Follow Us</h3>
+                <ul>
+                    <li><a href="https://www.facebook.com" target="_blank">Facebook</a></li>
+                    <li><a href="https://twitter.com" target="_blank">Twitter</a></li>
+                    <li><a href="https://www.instagram.com" target="_blank">Instagram</a></li>
+                    <li><a href="https://www.youtube.com" target="_blank">YouTube</a></li>
+                </ul>
+            </div>
+        </div>
+        <hr>
+        <p class="copyright">Copyright 2024 - Skyline Shopper</p>
+    </div>
+</div>
+</div>
+
+
+<script>
+    async function trackOrder() {
+        const orderId = document.getElementById("order-id-input").value.trim();
+        if (!orderId) {
+            alert("Please enter a valid Order ID.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:3000/getOrder/${orderId}`);
+            const data = await response.json();
+
+            if (data.success) {
+                const order = data.order;
+                document.getElementById("order-status-container").style.display = "block";
+                document.getElementById("order-details").style.display = "block";
+                document.getElementById("total-amount").textContent = order.totalAmount;
+
+                // Mark "Ordered" status as completed instantly
+                document.getElementById("ordered").classList.add("completed");
+
+                // Set the "Ordered" time
+                const orderedTime = new Date(order.orderDate).toLocaleString();
+                document.getElementById("ordered-time").textContent = `Ordered on: ${orderedTime}`;
+
+                const itemsContainer = document.getElementById("order-items");
+                itemsContainer.innerHTML = "";
+                order.items.forEach(item => {
+                    const itemDiv = document.createElement("div");
+                    itemDiv.innerHTML = `
+                        <div class="order-item">
+                            <img src="${item.image}" alt="${item.name}" class="order-item-image">
+                            <div class="order-item-info">
+                                <p><strong>${item.name}</strong></p>
+                                <p>Quantity: ${item.quantity}</p>
+                                <p>Price: ₹${item.price}</p>
+                            </div>
+                        </div>
+                    `;
+                    itemsContainer.appendChild(itemDiv);
+                });
+
+                // Update status steps based on time
+                const currentTime = new Date().getTime();
+                const orderTime = new Date(order.orderDate).getTime();
+                const elapsedTime = currentTime - orderTime;
+
+                const steps = ["ordered", "shipped", "out-for-delivery", "delivered"];
+                steps.forEach((step, index) => {
+                    const stepElement = document.getElementById(step);
+                    const stepTimeElement = document.getElementById(`${step}-time`);
+                    const threshold = (index + 1) * 3600000; // 1 hour per step
+
+                    if (elapsedTime >= threshold) {
+                        stepElement.classList.add("completed");
+                        stepTimeElement.textContent = `Completed on: ${new Date(currentTime).toLocaleString()}`;
+                    } else {
+                        stepElement.classList.remove("completed");
+                        stepTimeElement.textContent = ""; // Clear time if not completed
+                    }
+                });
+            } else {
+                alert(data.message);
+            }
+        } catch (err) {
+            console.error("Error fetching order:", err);
+            alert("An error occurred while fetching the order.");
+        }
+    }
+
+
+
+</script>
+
+</body>
+</html>
